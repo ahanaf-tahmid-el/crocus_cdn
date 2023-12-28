@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      2023-12-08
 // @description  try to take over the world!
-// @author       You
+// @author       Md. Ahanaf Tahmid Islam
 // @match        https://www.crocus.co.uk/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=crocus.co.uk
 // @grant        none
@@ -15,7 +15,6 @@
       <div id="chatbot_start_button">
         <img src="https://i.ibb.co/M2FC3F5/main-logo.png" alt="" />
       </div>
-  
       <div id="chatbot_body">
         <div id="chatbot" class="main-card">
           <div class="main-title">
@@ -69,8 +68,8 @@
       botScript.mainJs();
     },
     mainCss: function () {
-      var styles = document.createElement('style');
-      styles.setAttribute('type', 'text/css');
+      var styles = document.createElement("style");
+      styles.setAttribute("type", "text/css");
       document.head.appendChild(styles).textContent = `
         @media (min-width: 450px) {
           .main-card {
@@ -519,21 +518,21 @@
       /* eslint-disable camelcase */
       /* eslint-disable no-plusplus */
       /* eslint-disable vars-on-top */
-      var url = 'http://127.0.0.1:5000';
-      console.log('Main js running');
-      document.querySelector('body').insertAdjacentHTML('afterbegin', html);
+      var url = "http://127.0.0.1:5000";
+      console.log("Main js running");
+      document.querySelector("body").insertAdjacentHTML("afterbegin", html);
       var running = false;
-      var preQuery = '';
+      var preQuery = "";
       const isConversation = true;
-      var agentResp = '';
+      var agentResp = "";
       var loader = false;
       var sessionId = null;
-      let sessionTime = 20 // in minutes
+      let sessionTime = 20; // in minutes
 
       function addLoader() {
-        const messageBox = document.getElementById('message-box');
-        const div = document.createElement('div');
-        div.className = 'chat-message-div';
+        const messageBox = document.getElementById("message-box");
+        const div = document.createElement("div");
+        div.className = "chat-message-div";
         div.innerHTML = `
       <div class='chat-message-loader'>
         <div class='dot-loader'> <div></div><div></div><div></div></div>
@@ -545,97 +544,99 @@
       }
 
       function startConv() {
-        !localStorage.getItem('userId')
-          ? fetch(url + '/startConv', { method: 'GET' })
-            .then((response) => {
-              if (response.ok) {
-                return response.json(); // Parse the response data as JSON
-              }
-              throw new Error('API request failed');
-            })
-            .then((data) => {
-              // Process the response data here
-              console.log(data); // Example: Logging the data to the console
-              sessionId = data.res.id;
-              localStorage.setItem('userId', sessionId);
-              // setTimeout(function () {
-              //   endConv();
-              // }, 120000);
-            })
-            .catch((error) => {
-              // console.error(error);
-            })
-          : console.log('User_id', localStorage.getItem('userId'));
+        !localStorage.getItem("userId")
+          ? fetch(url + "/startConv", { method: "GET" })
+              .then((response) => {
+                if (response.ok) {
+                  return response.json(); // Parse the response data as JSON
+                }
+                throw new Error("API request failed");
+              })
+              .then((data) => {
+                // Process the response data here
+                console.log(data); // Example: Logging the data to the console
+                sessionId = data.res.id;
+                localStorage.setItem("userId", sessionId);
+                // setTimeout(function () {
+                //   endConv();
+                // }, 120000);
+              })
+              .catch((error) => {
+                // console.error(error);
+              })
+          : console.log("User_id", localStorage.getItem("userId"));
       }
 
-      document.getElementById('chatbot_start_button').onclick = () => {
+      document.getElementById("chatbot_start_button").onclick = () => {
         document
-          .getElementsByClassName('input-send')[0]
-          .removeAttribute('disabled');
+          .getElementsByClassName("input-send")[0]
+          .removeAttribute("disabled");
         document
-          .getElementsByClassName('input-message')[0]
-          .removeAttribute('disabled');
-        var chatbotBody = document.getElementById('chatbot_body');
-        chatbotBody.style.display = 'none' || ''
-          ? (chatbotBody.style.display = 'block')
-          : (chatbotBody.style.display = 'none');
+          .getElementsByClassName("input-message")[0]
+          .removeAttribute("disabled");
+        var chatbotBody = document.getElementById("chatbot_body");
+        chatbotBody.style.display =
+          "none" || ""
+            ? (chatbotBody.style.display = "block")
+            : (chatbotBody.style.display = "none");
 
         // eslint-disable-next-line eqeqeq
-        if (!localStorage.getItem('userId')) {
+        if (!localStorage.getItem("userId")) {
           setTimeout(() => {
-            document.getElementById('message').focus();
+            document.getElementById("message").focus();
           }, 0);
           startConv();
           addLoader();
-          setTimeout(addResponseMsg, 800, 'Hello! How can I help you?');
+          setTimeout(addResponseMsg, 800, "Hello! How can I help you?");
         }
       };
 
       document
-        .getElementById('message')
-        .addEventListener('keyup', function (event) {
+        .getElementById("message")
+        .addEventListener("keyup", function (event) {
           if (event.keyCode === 13) {
             event.preventDefault();
             send();
           }
         });
 
-      document.getElementsByClassName('input-send')[0].onclick = () => {
+      document.getElementsByClassName("input-send")[0].onclick = () => {
         send();
       };
 
-      document.getElementById('close_img').onclick = () => {
-        document.getElementById('chatbot_body').style.display = 'none';
+      document.getElementById("close_img").onclick = () => {
+        document.getElementById("chatbot_body").style.display = "none";
       };
 
       function endConv() {
         const formData = new FormData();
-        formData.append('id', localStorage.getItem('userId'));
-        fetch(url + '/stopConv', { method: 'POST', body: formData })
+        formData.append("id", localStorage.getItem("userId"));
+        fetch(url + "/stopConv", { method: "POST", body: formData })
           .then((response) => {
             if (response.ok) {
               return response.json();
             }
-            throw new Error('API request failed');
+            throw new Error("API request failed");
           })
           .then((data) => {
             // console.log(data);
-            preQuery = '';
-            agentResp = '';
+            preQuery = "";
+            agentResp = "";
             loader = false;
-            localStorage.removeItem('userId');
+            localStorage.removeItem("userId");
             // Get all elements with the class 'chat-message-div'
-            const chatMessageDivs = document.getElementById('message-box');
+            const chatMessageDivs = document.getElementById("message-box");
             // Set the inner HTML for the last element
-            innerHTML = '<div class="chat-message-div"><div class="message_received_main"><div><img id="body_img" src="https://i.ibb.co/tHDLpBj/body-logo.png" alt=""></div><div class="chat-message-received" style="background-color: #ffcccc;">Your chat session has expired. Kindly close and reopen the chat box to initiate a new session.</div></div></div>';
-            chatMessageDivs.insertAdjacentHTML('beforeend', innerHTML);
+            innerHTML =
+              '<div class="chat-message-div"><div class="message_received_main"><div><img id="body_img" src="https://i.ibb.co/tHDLpBj/body-logo.png" alt=""></div><div class="chat-message-received" style="background-color: #ffcccc;">Your chat session has expired. Kindly close and reopen the chat box to initiate a new session.</div></div></div>';
+            chatMessageDivs.insertAdjacentHTML("beforeend", innerHTML);
 
             document
-              .getElementsByClassName('input-send')[0]
-              .setAttribute('disabled', 'True');
+              .getElementsByClassName("input-send")[0]
+              .setAttribute("disabled", "True");
             document
-              .getElementsByClassName('input-message')[0]
-              .setAttribute('disabled', 'True');
+              .getElementsByClassName("input-message")[0]
+              .setAttribute("disabled", "True");
           })
           .catch((error) => {
             // console.error(error);
@@ -650,22 +651,22 @@
       }
 
       function conversation(msg) {
-        document.getElementById('message').disabled = true;
+        document.getElementById("message").disabled = true;
         loader = true;
         let timer;
         addLoader();
         window.setTimeout(addResponseMsg, 1000, msg);
         const formData = new FormData();
-        formData.append('query', msg);
-        formData.append('preQuery', preQuery);
-        formData.append('is_conversation', isConversation);
-        formData.append('agentResp', agentResp);
-        formData.append('id', localStorage.getItem('userId'));
+        formData.append("query", msg);
+        formData.append("preQuery", preQuery);
+        formData.append("is_conversation", isConversation);
+        formData.append("agentResp", agentResp);
+        formData.append("id", localStorage.getItem("userId"));
 
-        fetch(url + '/conversation', { method: 'POST', body: formData })
+        fetch(url + "/conversation", { method: "POST", body: formData })
           .then((response) => {
             if (response.ok) {
-              document.getElementById('message').disabled = false;
+              document.getElementById("message").disabled = false;
               clearTimeout(timer);
               timer = setTimeout(() => {
                 // Call the second function after 5 minutes
@@ -674,7 +675,7 @@
               return response.json();
             }
             loader = false;
-            throw new Error('API request failed');
+            throw new Error("API request failed");
           })
           .then((data) => {
             var preparedData = removeJsonPrefixAndSuffix(data);
@@ -684,9 +685,9 @@
             loader = false;
 
             if (
-              jsonData.product_Name
-              && jsonData.product_Image_URL.length > 0
-              && jsonData.product_Name.length > 0
+              jsonData.product_Name &&
+              jsonData.product_Image_URL.length > 0 &&
+              jsonData.product_Name.length > 0
             ) {
               console.log(jsonData.product_Name.length);
               productConversation(jsonData);
@@ -717,8 +718,8 @@
 
       function removeJsonPrefixAndSuffix(jsonString) {
         try {
-          const startIndex = jsonString.indexOf('{');
-          const endIndex = jsonString.lastIndexOf('}');
+          const startIndex = jsonString.indexOf("{");
+          const endIndex = jsonString.lastIndexOf("}");
           if (startIndex !== -1 && endIndex !== -1) {
             return jsonString.substring(startIndex, endIndex + 1);
           }
@@ -731,46 +732,49 @@
       function send() {
         if (running === true) return;
         // eslint-disable-next-line vars-on-top
-        var msg = document.getElementById('message').value;
-        if (msg === '') return;
+        var msg = document.getElementById("message").value;
+        if (msg === "") return;
         running = true;
         addMsg(msg);
         conversation(msg);
       }
 
       function addMsg(msg) {
-        var div = document.createElement('div');
+        var div = document.createElement("div");
         div.innerHTML = `<span style='flex-grow:1'></span><div class='chat-message-sent'>
       ${msg} </div>`;
-        div.className = 'chat-message-div';
-        document.getElementById('message-box').appendChild(div);
+        div.className = "chat-message-div";
+        document.getElementById("message-box").appendChild(div);
         // SEND MESSAGE TO API
-        document.getElementById('message').value = '';
-        document.getElementById('message-box').scrollTop = document.getElementById('message-box').scrollHeight;
+        document.getElementById("message").value = "";
+        document.getElementById("message-box").scrollTop =
+          document.getElementById("message-box").scrollHeight;
       }
 
       function addResponseMsg(msg) {
-        var msgBox = document.getElementById('message-box');
+        var msgBox = document.getElementById("message-box");
         if (!loader) {
-          msgBox.lastChild.innerHTML = '';
+          msgBox.lastChild.innerHTML = "";
           msgBox.lastChild.innerHTML = `<div class='message_received_main'><div><img id='body_img' src='https://i.ibb.co/tHDLpBj/body-logo.png' alt=''></div><div class='chat-message-received'>${msg}</div></div>`;
         }
-        document.getElementById('message-box').scrollTop = document.getElementById('message-box').scrollHeight;
+        document.getElementById("message-box").scrollTop =
+          document.getElementById("message-box").scrollHeight;
         running = false;
       }
 
       function addAiHelp(data) {
-        var div = document.createElement('div');
+        var div = document.createElement("div");
         div.innerHTML = `<div class='message_received_main'><div><img id='body_img' src='https://i.ibb.co/tHDLpBj/body-logo.png' alt=''></div><div class='chat-message-received'>${data}</div></div>`;
-        div.className = 'chat-message-div';
-        document.getElementById('message-box').appendChild(div);
-        document.getElementById('message-box').scrollTop = document.getElementById('message-box').scrollHeight;
+        div.className = "chat-message-div";
+        document.getElementById("message-box").appendChild(div);
+        document.getElementById("message-box").scrollTop =
+          document.getElementById("message-box").scrollHeight;
         running = false;
       }
 
       function addProducts(data) {
-        const messageBox = document.getElementById('message-box');
-        let html = '';
+        const messageBox = document.getElementById("message-box");
+        let html = "";
 
         for (let i = 0; i < data.product_Name.length; i++) {
           const {
@@ -783,12 +787,12 @@
             product_Image_URL[i],
             product_Name[i],
             product_description[i],
-            product_url[i],
+            product_url[i]
           );
         }
 
-        const rowDiv = document.createElement('div');
-        rowDiv.classList.add('product_row');
+        const rowDiv = document.createElement("div");
+        rowDiv.classList.add("product_row");
         rowDiv.innerHTML = html;
 
         messageBox.appendChild(rowDiv);
@@ -797,7 +801,8 @@
       }
 
       function productCard(image, name, description, product) {
-        return product ? `
+        return product
+          ? `
         <div class='chat-message-div'>
           <div class='message_received_main'>
               <div>
@@ -810,35 +815,39 @@
                           <div class="card">
                               <div class="image-container">
                                   <img class="Image" src=${
-        image
-                                    || 'https://demofree.sirv.com/nope-not-here.jpg'
-      } />
+                                    image ||
+                                    "https://demofree.sirv.com/nope-not-here.jpg"
+                                  } />
                               </div>
                               <div class="card-details">
                                   <div class="details-row">
-                                      <div class="productName">${name || ''}</div>
+                                      <div class="productName">${
+                                        name || ""
+                                      }</div>
                                   </div>
                                   <div class="details-row">
-                                      <div class="price">${name ? '£18.50' : ''}</div>
+                                      <div class="price">${
+                                        name ? "£18.50" : ""
+                                      }</div>
                                   </div>
                                   <div class="availability">
                                       <div class="availability_inside">${
-        name ? 'Available: 30' : ''
-      }</div>
+                                        name ? "Available: 30" : ""
+                                      }</div>
                                   </div>
                               </div>
                           </div>
                       </a>
       
-                      <div class="description-text">${description || ''}</div>
+                      <div class="description-text">${description || ""}</div>
                   </div>
               </div>
           </div>
       </div>
-        ` : '';
+        `
+          : "";
       }
-      
     },
   };
   botScript.init();
-}());
+})();
