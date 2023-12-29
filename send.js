@@ -643,19 +643,20 @@
           });
       }
 
-      // Function to get the remaining time
-      function getRemainingTime() {
-        const currentTime = new Date().getTime();
-        const timerEndTime = currentTime + 5 * 60 * 1000; // 5 minutes in milliseconds
-        return timerEndTime - currentTime;
-      }
-
+      let timer;
       function conversation(msg) {
         document.getElementById("message").disabled = true;
         loader = true;
-        let timer;
+        // Clear existing timer (if any)
+        if (timer) {
+          clearTimeout(timer);
+        }
         addLoader();
-        window.setTimeout(addResponseMsg, 1000, msg);
+        // Set a new timer for the session timeout
+        timer = setTimeout(() => {
+          endConv();
+        }, sessionTime * 60 * 1000); // minutes in milliseconds
+
         const formData = new FormData();
         formData.append("query", msg);
         formData.append("preQuery", preQuery);
@@ -667,9 +668,9 @@
           .then((response) => {
             if (response.ok) {
               document.getElementById("message").disabled = false;
+              // Restart the timer
               clearTimeout(timer);
               timer = setTimeout(() => {
-                // Call the second function after 5 minutes
                 endConv();
               }, sessionTime * 60 * 1000); // 5 minutes in milliseconds
               return response.json();
@@ -689,7 +690,6 @@
               jsonData.product_Image_URL.length > 0 &&
               jsonData.product_Name.length > 0
             ) {
-              console.log(jsonData.product_Name.length);
               productConversation(jsonData);
             } else if (jsonData.ai_info) {
               addResponseMsg(jsonData.ai_info);
